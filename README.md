@@ -28,9 +28,3 @@ fullstack/
 ```
 
 
-5. Add refresh tokens for better security
-
-## License
-
-MIT
-
