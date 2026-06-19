@@ -267,11 +267,7 @@ export default function Dashboard() {
                   key={index}
                 >
                   <div>
-                    <strong>{email.from}</strong>
-
-                    <br />
-
-                    {email.subject}
+                    <li>{email.subject}</li>
                   </div>
                 </li>
               ))}
