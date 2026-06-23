@@ -4,7 +4,7 @@ import gmailRouter from './routes/gmail.js';
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
-
+import labelRoutes from './config/labelRoutes.js';
 import authRouter from './routes/auth.js';
 import googleAuthRouter from './routes/googleAuth.js';
 import gmailConnectRoutes from './routes/gmailConnect.js';
@@ -13,7 +13,6 @@ import gmailRecentRoutes from "./routes/gmailRecent.js";
 const app = express();
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/signup-app';
-
 // Connect to MongoDB
 let dbConnected = false;
 mongoose
@@ -49,6 +48,7 @@ app.use('/api/auth', googleAuthRouter);
 app.use('/api/auth', gmailConnectRoutes);
 app.use('/api/gmail', gmailRouter);
 app.use('/api/gmail', gmailStatsRoutes);
+app.use('/api/labels', labelRoutes);
 app.use("/api/gmail/recent", gmailRecentRoutes);
 app.get('/api/dashboard', (req, res) => {
   // Add dashboard logic here

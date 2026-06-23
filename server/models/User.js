@@ -48,6 +48,12 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    // ADD this inside your existing UserSchema — alongside your other fields
+    labelIds: {
+    type: Map,
+    of: String,
+    default: {},
+    },
   },
   {
     timestamps: true,

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Dashboard.css";
-
+// At the top with your other imports
+import LabelManager from '../components/LabelManager';
 import {
   PieChart,
   Pie,
@@ -247,7 +248,6 @@ export default function Dashboard() {
                 />
               ))}
             </Pie>
-
             <Tooltip />
             <Legend />
           </PieChart>
@@ -273,7 +273,9 @@ export default function Dashboard() {
               ))}
             </ul>
           </section>
-
+              <section className="card">
+<LabelManager />       
+</section>
           <section className="card">
             <h2 className="card-title">
               Quick Actions
