@@ -30,7 +30,7 @@ export function useLabels() {
         params: { maxEmails },
         ...getAuthHeader(),
       });
-      setScanResults(data.summary);
+      setScanResults(data.results);
       return data;
     } catch (e) {
       setError(e.response?.data?.error || e.message);
@@ -59,16 +59,23 @@ const fetchLabels = useCallback(async () => {
     } finally { setLoading(false); }
  }, [fetchLabels]);
 
-  const deleteLabel = useCallback(async (labelKey, permanent = false) => {
-    setLoading(true); setError(null);
-    try {
-      const { data } = await axios.post(`${API}/delete`, { labelKey, permanent }, getAuthHeader());
-      await fetchLabels();
-      return data;
-    } catch (e) {
-      setError(e.response?.data?.error || e.message);
-    } finally { setLoading(false); }
- }, [fetchLabels]);
+  const deleteLabel = useCallback(async ({ key, results, action }) => {
+  setLoading(true); setError(null);
+  try {
+    const { data } = await axios.post(
+      `${API}/apply`,   // ✅ USE APPLY ROUTE
+      { results, action },
+      getAuthHeader()
+    );
+
+    await fetchLabels();
+    return data;
+  } catch (e) {
+    setError(e.response?.data?.error || e.message);
+  } finally {
+    setLoading(false);
+  }
+}, [fetchLabels]);
 
   return { labels, scanResults, loading, error, setup, scan, apply, deleteLabel, fetchLabels };
 }

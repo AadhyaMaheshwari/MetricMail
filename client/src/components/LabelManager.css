@@ -1,0 +1,293 @@
+/* ── wrapper ─────────────────────────────────────── */
+.lm-wrap {
+  width: 100%;
+  font-family: inherit;
+}
+
+/* ── header ──────────────────────────────────────── */
+.lm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 8px;
+}
+
+.lm-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* ── status bar ──────────────────────────────────── */
+.lm-status {
+  font-size: 12px;
+  padding: 8px 12px;
+  border-radius: 7px;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+.lm-status-info    { background: #f0f7ff; color: #1a4a8a; border: 1px solid #b8d4f5; }
+.lm-status-success { background: #f0faf2; color: #1a5c2a; border: 1px solid #a8ddb5; }
+.lm-status-error   { background: #fff0f0; color: #8a0000; border: 1px solid #f5b3b3; }
+
+/* ── scan bar ────────────────────────────────────── */
+.lm-scanbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f7f7f7;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.lm-scanbar-label {
+  font-size: 12px;
+  color: #666;
+  white-space: nowrap;
+}
+
+/* ── buttons ─────────────────────────────────────── */
+.lm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #d0d0d0;
+  background: #fff;
+  color: #333;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  line-height: 1;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+.lm-btn:disabled        { opacity: 0.45; cursor: not-allowed; }
+.lm-btn:hover:not(:disabled) { opacity: 0.8; }
+
+.lm-btn-done   { background: #f0faf2; border-color: #a8ddb5; color: #1a5c2a; }
+.lm-btn-apply  { background: #eef4ff; border-color: #a8c4f5; color: #1a4a8a; }
+.lm-btn-delete { background: #fff5f5; border-color: #f5b3b3; color: #c00000; }
+.lm-btn-perm   { background: #fff0f0; border-color: #f08080; color: #900; }
+
+/* ── select ──────────────────────────────────────── */
+.lm-select {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #d0d0d0;
+  background: #fff;
+  font-size: 12px;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+  flex-shrink: 0;
+}
+
+/* ── label list ──────────────────────────────────── */
+.lm-label-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* ── single label row — KEY FIX ─────────────────── */
+.lm-label-row {
+  display: grid;
+  /* emoji | info (takes all space) | button */
+  grid-template-columns: 28px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid #ebebeb;
+  border-radius: 8px;
+  padding: 9px 12px;
+  min-height: 48px;
+}
+
+.lm-label-emoji {
+  font-size: 18px;
+  line-height: 1;
+  text-align: center;
+}
+
+/* info block — never shrinks or overflows */
+.lm-label-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;       /* allows text-overflow to work */
+  overflow: hidden;
+}
+
+.lm-label-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #222;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* sub-line: "Not set up yet · 147 to label" — stays on ONE line */
+.lm-label-sub {
+  font-size: 11px;
+  color: #999;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+}
+
+.lm-scan-count {
+  color: #1a4a8a;
+  font-weight: 500;
+}
+
+.lm-badge-protected {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: #fff8e1;
+  color: #8a6200;
+  border: 1px solid #f5dfa0;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* ── modal ───────────────────────────────────────── */
+.lm-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.lm-modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 340px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+}
+
+.lm-modal-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.lm-modal-body {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.lm-modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* ---------- prevent global button styles ---------- */
+.lm-btn {
+  width: auto !important;
+  min-width: fit-content;
+  height: 36px;
+}
+
+/* setup button */
+.lm-btn-setup {
+  padding: 0 16px;
+}
+
+/* ---------- scan section ---------- */
+.lm-scanbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.lm-scanbar .lm-btn {
+  flex: 0 0 auto;
+}
+
+/* ---------- label cards ---------- */
+.lm-label-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid #ececec;
+  border-radius: 12px;
+  background: white;
+}
+
+.lm-label-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.lm-label-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.lm-label-sub {
+  margin-top: 3px;
+  font-size: 13px;
+  color: #777;
+}
+
+.lm-scan-count {
+  color: #2563eb;
+  font-weight: 500;
+}
+
+/* ---------- right-side buttons ---------- */
+.lm-label-row > .lm-btn {
+  margin-left: auto;
+  width: auto !important;
+  min-width: 100px;
+  flex-shrink: 0;
+}
+
+/* ---------- select dropdown ---------- */
+.lm-select {
+  width: auto;
+  min-width: 140px;
+  height: 36px;
+}
+
+/* ---------- header ---------- */
+.lm-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.lm-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+}

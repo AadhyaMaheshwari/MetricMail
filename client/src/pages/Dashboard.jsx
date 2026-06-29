@@ -46,20 +46,21 @@ export default function Dashboard() {
 
   const [emails, setEmails] = useState([]);
 
-  const chartData = [
-    { name: "Promotions", value: stats.promotions },
-    { name: "Social", value: stats.social },
-    { name: "Spam", value: stats.spam },
-    { name: "Others", value: stats.inbox - stats.promotions - stats.social - stats.spam },
-  ];
+const chartData = [
+  { name: "Promotions", value: stats.promotions },
+  { name: "Social",     value: stats.social },
+  { name: "Spam",       value: stats.spam },
+  { name: "Updates",    value: stats.updates },
+  { name: "Others",     value: stats.inbox - stats.promotions - stats.social - stats.spam - (stats.updates || 0) - (stats.forums || 0) },
+];
 
-  const COLORS = [
-    "#437fdf",
-    "#9f45ee",
-    "#63bd7b",
-    "#d41b68",
-  ];
-
+const COLORS = [
+  "#437fdf", // Promotions
+  "#9f45ee", // Social
+  "#63bd7b", // Spam
+  "#d41b68", // Updates
+  "#f5a623", // Others
+];
   async function connectGmail() {
     try {
       const token = localStorage.getItem("token");
