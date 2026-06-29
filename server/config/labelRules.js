@@ -2,7 +2,7 @@ const LABEL_RULES = [
   {
     key: 'promotions',
     name: 'Promotions',
-    color: { backgroundColor: '#ffd6a2', textColor: '#9a5c00' },
+    color: { backgroundColor: '#FFFFFF', textColor: '#000000' },
     domains: [
       'amazon.in','amazon.com','flipkart.com','myntra.com','nykaa.com',
       'ajio.com','meesho.com','snapdeal.com','swiggy.in','zomato.com',
@@ -21,7 +21,7 @@ const LABEL_RULES = [
   {
     key: 'social',
     name: 'Social',
-    color: { backgroundColor: '#b6d7ff', textColor: '#1a3a6b' },
+    color: { backgroundColor: '#FFFFFF', textColor: '#000000' },
     domains: [
       'facebookmail.com','twitter.com','instagram.com','pinterest.com',
       'reddit.com','quora.com','snapchat.com','tiktok.com',
@@ -38,7 +38,7 @@ const LABEL_RULES = [
   {
     key: 'google',
     name: 'Google',
-    color: { backgroundColor: '#e6f4ea', textColor: '#1a5c2a' },
+    color: { backgroundColor: '#FFFFFF', textColor: '#000000' },
     domains: [
       'google.com','accounts.google.com','googleplay.com',
       'google.co.in','workspace.google.com','youtube.com',
@@ -55,7 +55,7 @@ const LABEL_RULES = [
   {
     key: 'bank',
     name: 'Bank & Finance',
-    color: { backgroundColor: '#d9d2e9', textColor: '#3b006b' },
+    color: { backgroundColor: '#FFFFFF', textColor: '#000000' },
     domains: [
       'hdfcbank.com','icicibank.com','sbi.co.in','axisbank.com',
       'kotak.com','yesbank.in','indusind.com','pnb.co.in',
@@ -74,7 +74,7 @@ const LABEL_RULES = [
   {
     key: 'otp',
     name: 'OTP & Alerts',
-    color: { backgroundColor: '#fce8b2', textColor: '#7a4900' },
+     color: { backgroundColor: '#FFFFFF', textColor: '#000000' },
     domains: [],
     subjects: [
       'otp','one-time password','verification code','your code is',
@@ -88,7 +88,7 @@ const LABEL_RULES = [
   {
     key: 'jobs',
     name: 'Jobs & Career',
-    color: { backgroundColor: '#ffd6e0', textColor: '#6b001a' },
+    color: { backgroundColor: '#FFFFFF', textColor: '#000000' },
     domains: [
       // LinkedIn merged in here
       'linkedin.com','e.linkedin.com','news.linkedin.com','jobs.linkedin.com',
@@ -114,7 +114,7 @@ const LABEL_RULES = [
   {
     key: 'education',
     name: 'Education',
-    color: { backgroundColor: '#d0f0c0', textColor: '#0d3b00' },
+    color: { backgroundColor: '#FFFFFF', textColor: '#000000' },
     domains: [
       'coursera.org','udemy.com','edx.org','udacity.com','nptel.ac.in',
       'swayam.gov.in','khanacademy.org','skillshare.com','pluralsight.com',

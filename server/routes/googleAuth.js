@@ -23,12 +23,12 @@ function getOAuth2Client() {
   }
   return oauth2Client;
 }
-
 const SCOPES = [
   'openid',
-  'email',
+  'https://www.googleapis.com/auth/gmail.modify',    // Labelling and deleting emails
+  'https://www.googleapis.com/auth/gmail.labels',    // ← allows Creating labels
   'profile',
-  'https://www.googleapis.com/auth/gmail.metadata'
+  'email'
 ];
 
 /**

@@ -4,12 +4,11 @@ import User from '../models/User.js';
 import LABEL_RULES from './labelRules.js';
 import { classifyEmail } from './classifier.js';
 import authMiddleware from '../middleware/authMiddleware.js';
-
-const router = express.Router(); // ← add this line
-
+import { trashEmails } from '../controllers/gmailController.js';
+const router = express.Router(); 
+router.post('/trash', authMiddleware, trashEmails);
 router.use(authMiddleware);
 
-// ── helper: build an authenticated gmail client from user's stored tokens ──
 async function getGmailClient(userId) {
   const user = await User.findById(userId);
   if (!user?.googleAccessToken) throw new Error('Gmail not connected');
@@ -32,40 +31,59 @@ router.post('/setup', async (req, res) => {
     const gmail = await getGmailClient(req.user.id);
 
     const { data: existing } = await gmail.users.labels.list({ userId: 'me' });
-    const existingMap = new Map(existing.labels.map(l => [l.name, l.id]));
 
+    console.log("Existing labels:", existing.labels.map(l => l.name)); // 👈 DEBUG
+
+    const existingLabels = existing.labels || [];
+
+const normalize = (s) => s.trim().toLowerCase();
+
+const existingMap = new Map(
+  existingLabels.map(l => [normalize(l.name), l.id])
+);
     const created = {};
-    for (const rule of LABEL_RULES) {
-      if (existingMap.has(rule.name)) {
-        created[rule.key] = existingMap.get(rule.name);
-        continue;
-      }
-      const { data: label } = await gmail.users.labels.create({
-        userId: 'me',
-        requestBody: {
-          name: rule.name,
-          labelListVisibility: 'labelShow',
-          messageListVisibility: 'show',
-          color: rule.color,
-        },
-      });
-      created[rule.key] = label.id;
-    }
 
-    // Save labelIds map into the User document
-    await User.findByIdAndUpdate(req.user.id, { labelIds: created });
+    for (const rule of LABEL_RULES) {
+  console.log("Processing:", rule.name);
+
+  if (existingMap.has(normalize(rule.name))) {
+    console.log("Already exists:", rule.name);
+    created[rule.key] = existingMap.get(normalize(rule.name));
+    continue;
+  }
+
+  console.log("Creating:", rule.name);
+
+  const { data: label } = await gmail.users.labels.create({
+    userId: 'me',
+    requestBody: {
+  name: rule.name,
+  labelListVisibility: 'labelShow',
+  messageListVisibility: 'show',
+},
+  });
+  created[rule.key] = label.id;
+}
+    console.log("Final created object:", created); // 👈 MOST IMPORTANT
+
+    await User.findByIdAndUpdate(
+  req.user.id,
+  { $set: { labelIds: created } },
+  { new: true }
+);
 
     res.json({ success: true, labels: created });
+
   } catch (err) {
+    console.error("SETUP ERROR:", err); // 👈 MUST SEE THIS
     res.status(500).json({ error: err.message });
   }
 });
-
 // ── GET /api/labels/scan?maxEmails=500 ───────────────────────────────────────
 router.get('/scan', async (req, res) => {
   try {
     const gmail     = await getGmailClient(req.user.id);
-    const maxEmails = Math.min(parseInt(req.query.maxEmails) || 500, 2000);
+    const maxEmails = Math.min(parseInt(req.query.maxEmails) || 500, 10000);
 
     let messageIds = [];
     let pageToken  = null;
@@ -120,35 +138,57 @@ router.get('/scan', async (req, res) => {
 // ── POST /api/labels/apply ───────────────────────────────────────────────────
 router.post('/apply', async (req, res) => {
   try {
-    const gmail   = await getGmailClient(req.user.id);
-    const user    = await User.findById(req.user.id);
-    const labelIds = user?.labelIds || {};
-    const { results } = req.body;
+    const gmail = await getGmailClient(req.user.id);
+    const user = await User.findById(req.user.id);
+const { results } = req.body;
 
-    if (!Object.keys(labelIds).length)
-      return res.status(400).json({ error: 'Run /setup first' });
+const labelIds = user?.labelIds || {};
+
+if (!Object.keys(labelIds).length) {
+  return res.status(400).json({ error: 'Run Setup first' });
+}
+
 
     const report = {};
-    for (const rule of LABEL_RULES) {
-      const labelId = labelIds[rule.key];
-      const ids     = results?.[rule.key]?.ids || [];
-      if (!ids.length || !labelId) { report[rule.key] = 0; continue; }
 
-      for (let i = 0; i < ids.length; i += 1000) {
-        await gmail.users.messages.batchModify({
-          userId: 'me',
-          requestBody: { ids: ids.slice(i, i + 1000), addLabelIds: [labelId] },
-        });
+    for (const rule of LABEL_RULES) {
+
+    const labelId = labelIds[rule.key];
+    const ids = results?.[rule.key]?.ids || [];
+
+     if (ids.length && rule.protected && action === 'trash') {
+    return res.status(403).json({
+      error: `${rule.name} is protected. Confirm to delete.`
+    });
+  }
+
+      if (!ids.length || !labelId) {
+        report[rule.key] = 0;
+        continue;
       }
+
+      const BATCH_SIZE = 50;    
+const DELAY_MS = 200;     
+for (const key of Object.keys(results)) {
+  const ids = results[key].ids;
+
+  await processEmailsInBatches(
+    gmail,
+    ids,
+    action,
+    labelId
+  );
+}
+
+
       report[rule.key] = ids.length;
     }
-
     res.json({ success: true, applied: report });
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
-
 // ── POST /api/labels/delete ──────────────────────────────────────────────────
 router.post('/delete', async (req, res) => {
   try {
@@ -183,9 +223,16 @@ router.post('/delete', async (req, res) => {
           requestBody: { ids: messageIds.slice(i, i + 1000) },
         });
     } else {
-      await Promise.all(messageIds.map(id =>
-        gmail.users.messages.trash({ userId: 'me', id })
-      ));
+      for (const msg of results) {
+  await gmail.users.messages.modify({
+    userId: 'me',
+    id: msg.id,
+    requestBody: {
+      addLabelIds: [labelId],
+    },
+  });
+   await sleep(50); // prevents rate limit
+}
     }
 
     res.json({ success: true, deleted: messageIds.length, permanent, labelKey });

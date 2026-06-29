@@ -50,14 +50,14 @@ const userSchema = new mongoose.Schema(
     },
     // ADD this inside your existing UserSchema — alongside your other fields
     labelIds: {
-    type: Map,
-    of: String,
-    default: {},
+      type: Object,
+      default: {},
     },
+
+    // other fields here...
   },
   {
-    timestamps: true,
+    timestamps: true, // options go in SECOND argument
   }
 );
-
 export default mongoose.model('User', userSchema);

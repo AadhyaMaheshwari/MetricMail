@@ -10,6 +10,7 @@ import googleAuthRouter from './routes/googleAuth.js';
 import gmailConnectRoutes from './routes/gmailConnect.js';
 import gmailStatsRoutes from './routes/gmailStats.js';
 import gmailRecentRoutes from "./routes/gmailRecent.js";
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const app = express();
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/signup-app';
