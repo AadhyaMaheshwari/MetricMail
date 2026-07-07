@@ -1,5 +1,6 @@
 import React from 'react';
+import AnalyticsDashboard from '../components/analytics/AnalyticsDashboard';
 
 export default function Analytics() {
-  return <h1>Analytics</h1>;
+  return <AnalyticsDashboard />;
 }
