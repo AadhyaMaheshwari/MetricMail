@@ -10,11 +10,12 @@ import googleAuthRouter from './routes/googleAuth.js';
 import gmailConnectRoutes from './routes/gmailConnect.js';
 import gmailStatsRoutes from './routes/gmailStats.js';
 import gmailRecentRoutes from "./routes/gmailRecent.js";
-import gmailInsightsRoutes from './routes/gmailInsights.js';
+import campaignRoutes from "./routes/campaign.js";
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const app = express();
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/signup-app';
+
 // Connect to MongoDB
 let dbConnected = false;
 mongoose
@@ -23,6 +24,7 @@ mongoose
     console.log('Connected to MongoDB');
     dbConnected = true;
   })
+  
   .catch((error) => {
     console.error('MongoDB connection error:', error);
     console.error('MONGO_URI:', MONGO_URI);
@@ -50,9 +52,9 @@ app.use('/api/auth', googleAuthRouter);
 app.use('/api/auth', gmailConnectRoutes);
 app.use('/api/gmail', gmailRouter);
 app.use('/api/gmail', gmailStatsRoutes);
-app.use('/api/gmail', gmailInsightsRoutes);
 app.use('/api/labels', labelRoutes);
 app.use("/api/gmail/recent", gmailRecentRoutes);
+app.use("/api/campaigns", campaignRoutes);
 app.get('/api/dashboard', (req, res) => {
   // Add dashboard logic here
   res.json({ message: 'Dashboard data' });
