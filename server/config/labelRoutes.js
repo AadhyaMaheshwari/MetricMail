@@ -129,7 +129,7 @@ router.get('/scan', async (req, res) => {
       };
     }
 
-    res.json({ success: true, scanned: messageIds.length, summary });
+    res.json({ success: true, scanned: messageIds.length, summary, results: summary });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -140,51 +140,47 @@ router.post('/apply', async (req, res) => {
   try {
     const gmail = await getGmailClient(req.user.id);
     const user = await User.findById(req.user.id);
-const { results } = req.body;
+    const { results } = req.body;
 
-const labelIds = user?.labelIds || {};
+    const labelIds = user?.labelIds || {};
 
-if (!Object.keys(labelIds).length) {
-  return res.status(400).json({ error: 'Run Setup first' });
-}
+    if (!Object.keys(labelIds).length) {
+      return res.status(400).json({ error: 'Run Setup first' });
+    }
 
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    const applyLabelBatch = async (ids, labelId) => {
+      const BATCH_SIZE = 500;
+      for (let i = 0; i < ids.length; i += BATCH_SIZE) {
+        const batch = ids.slice(i, i + BATCH_SIZE);
+        await gmail.users.messages.batchModify({
+          userId: 'me',
+          requestBody: {
+            ids: batch,
+            addLabelIds: [labelId],
+          },
+        });
+        if (i + BATCH_SIZE < ids.length) await sleep(300);
+      }
+    };
 
     const report = {};
 
     for (const rule of LABEL_RULES) {
-
-    const labelId = labelIds[rule.key];
-    const ids = results?.[rule.key]?.ids || [];
-
-     if (ids.length && rule.protected && action === 'trash') {
-    return res.status(403).json({
-      error: `${rule.name} is protected. Confirm to delete.`
-    });
-  }
+      const labelId = labelIds[rule.key];
+      const ids = results?.[rule.key]?.ids || [];
 
       if (!ids.length || !labelId) {
         report[rule.key] = 0;
         continue;
       }
 
-      const BATCH_SIZE = 50;    
-const DELAY_MS = 200;     
-for (const key of Object.keys(results)) {
-  const ids = results[key].ids;
-
-  await processEmailsInBatches(
-    gmail,
-    ids,
-    action,
-    labelId
-  );
-}
-
-
+      await applyLabelBatch(ids, labelId);
       report[rule.key] = ids.length;
     }
-    res.json({ success: true, applied: report });
 
+    res.json({ success: true, applied: report });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

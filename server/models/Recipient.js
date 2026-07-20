@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+
 const recipientSchema = new mongoose.Schema(
   {
     campaignId: {
@@ -6,11 +7,13 @@ const recipientSchema = new mongoose.Schema(
       ref: "Campaign",
       required: true,
     },
+
     name: {
       type: String,
       trim: true,
       default: "",
     },
+
     email: {
       type: String,
       required: true,
@@ -18,9 +21,14 @@ const recipientSchema = new mongoose.Schema(
       trim: true,
     },
 
+    trackingToken: {
+    type: String,
+    unique: true,
+},
+
     status: {
       type: String,
-      enum: ["pending", "sent", "delivered", "failed"],
+      enum: ["pending", "sending", "sent", "failed", "bounced"],
       default: "pending",
     },
 
@@ -53,6 +61,10 @@ const recipientSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    errorMessage: {
+    type: String,
+    default: "",
+    },
 
     sentAt: {
       type: Date,
@@ -79,4 +91,4 @@ const recipientSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Recipient", recipientSchema);
+export default mongoose.model("Recipient", recipientSchema);

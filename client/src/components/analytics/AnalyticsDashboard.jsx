@@ -85,7 +85,6 @@ export default function AnalyticsDashboard() {
   }
 
   async function fetchStats() {
-    try {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
@@ -103,10 +102,7 @@ export default function AnalyticsDashboard() {
         setStats(data.stats);
         setGmailConnected(true);
       }
-    } catch (err) {
-      console.error(err);
     }
-  }
 
   async function fetchRecentEmails() {
     try {
@@ -175,179 +171,132 @@ export default function AnalyticsDashboard() {
   }
 
   return (
-    <div className="dash-root">
-      <aside className="sidebar">
-        <div className="sidebar-logo">
-          <span className="logo-mark">◆</span>
-          <span className="logo-text">SoftServe</span>
+    <>
+      <header className="topbar">
+        <div>
+          <h1 className="greeting">
+            {getGreeting()}, {name ? name.split(" ")[0] : ""}
+          </h1>
+
+          <p className="greeting-sub">
+            Your mail statistics look like this:
+          </p>
         </div>
 
-        <nav className="sidebar-nav">
-          <a className="nav-item active" href="#">
-            Statistics Dashboard
-          </a>
-
-          <a className="nav-item" href="#">
-            Messages
-          </a>
-
-          <a className="nav-item" href="#">
-            Settings
-          </a>
-        </nav>
-
-        <div className="sidebar-footer">
-          <div className="user-row">
-            <div className="avatar">
-              {name ? getInitials(name) : "?"}
-            </div>
-
-            <div className="user-info">
-              <div className="user-name">{name}</div>
-              <div className="user-role">Member</div>
-            </div>
-          </div>
-
+        <div className="topbar-right">
           <button
-            className="signout-btn"
+            className="topbar-signout"
             onClick={handleSignOut}
           >
-            Sign out
+            Sign Out
           </button>
         </div>
-      </aside>
+      </header>
 
-      <main className="main">
-        <header className="topbar">
-          <div>
-            <h1 className="greeting">
-              {getGreeting()}, {name ? name.split(" ")[0] : ""}
-            </h1>
+      <section className="stats-grid">
+        {Object.entries(stats).map(([label, value]) => (
+          <div className="stat-card" key={label}>
+            <div className="stat-value">{value}</div>
 
-            <p className="greeting-sub">
-              Your mail statistics look like this:
-            </p>
-          </div>
-
-          <div className="topbar-right">
-            <button
-              className="topbar-signout"
-              onClick={handleSignOut}
-            >
-              Sign Out
-            </button>
-          </div>
-        </header>
-
-        <section className="stats-grid">
-          {Object.entries(stats).map(([label, value]) => (
-            <div className="stat-card" key={label}>
-              <div className="stat-value">{value}</div>
-
-              <div className="stat-label">
-                {label.toUpperCase()}
-              </div>
+            <div className="stat-label">
+              {label.toUpperCase()}
             </div>
-          ))}
+          </div>
+        ))}
+      </section>
+
+      <section className="card">
+        <h2 className="card-title">
+          Email Distribution
+        </h2>
+
+        <PieChart width={450} height={300}>
+          <Pie
+            data={chartData}
+            cx="50%"
+            cy="50%"
+            outerRadius={100}
+            dataKey="value"
+            label
+            isAnimationActive={false}
+          >
+            {chartData.map((entry, index) => (
+              <Cell
+                key={index}
+                fill={COLORS[index % COLORS.length]}
+              />
+            ))}
+          </Pie>
+          <Tooltip />
+          <Legend />
+        </PieChart>
+      </section>
+
+      <div className="lower-grid">
+        <section className="card">
+          <h2 className="card-title">
+            Recent Emails
+          </h2>
+
+          <ul className="activity-list">
+            {emails.map((email, index) => (
+              <li
+                className="activity-item"
+                key={index}
+              >
+                <div>{email.subject}</div>
+              </li>
+            ))}
+          </ul>
         </section>
 
         <section className="card">
           <h2 className="card-title">
-            Email Distribution
+            Inbox Insights
           </h2>
 
-          <PieChart width={450} height={300}>
-            <Pie
-              data={chartData}
-              cx="50%"
-              cy="50%"
-              outerRadius={100}
-              dataKey="value"
-              label
-              isAnimationActive={false}
-            >
-              {chartData.map((entry, index) => (
-                <Cell
-                  key={index}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
+          {insights ? (
+            <div className="insights-panel">
+              <p className="insight-summary">{insights.summary}</p>
+              <ul className="insight-list">
+                <li><strong>Unread:</strong> {insights.unreadCount}</li>
+                <li><strong>Unread ratio:</strong> {insights.unreadRatio}%</li>
+                <li><strong>Top category:</strong> {insights.topCategory}</li>
+              </ul>
+            </div>
+          ) : (
+            <p className="insight-summary">Connect Gmail to unlock insights.</p>
+          )}
         </section>
 
-        <div className="lower-grid">
-          <section className="card">
-            <h2 className="card-title">
-              Recent Emails
-            </h2>
+        <section className="card">
+          <h2 className="card-title">
+            Quick Actions
+          </h2>
 
-            <ul className="activity-list">
-              {emails.map((email, index) => (
-                <li
-                  className="activity-item"
-                  key={index}
-                >
-                  <div>
-                    <li>{email.subject}</li>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          <section className="card">
-            <h2 className="card-title">
-              Inbox Insights
-            </h2>
-
-            {insights ? (
-              <div className="insights-panel">
-                <p className="insight-summary">{insights.summary}</p>
-                <ul className="insight-list">
-                  <li><strong>Unread:</strong> {insights.unreadCount}</li>
-                  <li><strong>Unread ratio:</strong> {insights.unreadRatio}%</li>
-                  <li><strong>Top category:</strong> {insights.topCategory}</li>
-                </ul>
-              </div>
+          <div className="actions-list">
+            {gmailConnected ? (
+              <button className="action-btn">
+                ✓ Gmail Connected
+              </button>
             ) : (
-              <p className="insight-summary">Connect Gmail to unlock insights.</p>
-            )}
-          </section>
-
-          <section className="card">
-            <h2 className="card-title">
-              Quick Actions
-            </h2>
-
-            <div className="actions-list">
-              {
-                gmailConnected ? (
-                  <button className="action-btn">
-                    ✓ Gmail Connected
-                  </button>
-                ) : (
-                  <button
-                    className="action-btn"
-                    onClick={connectGmail}
-                  >
-                    Connect Gmail
-                  </button>
-                )
-              }
-
               <button
                 className="action-btn"
-                onClick={fetchStats}
+                onClick={connectGmail}
               >
-                Refresh Statistics
+                Connect Gmail
               </button>
-            </div>
-          </section>
-        </div>
-      </main>
-    </div>
+            )}
+
+            <button
+              className="action-btn"
+              onClick={fetchStats}
+            >
+              Refresh Statistics
+            </button>
+          </div>
+        </section>
+      </div>
+    </>
   );
 }

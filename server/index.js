@@ -11,6 +11,8 @@ import gmailConnectRoutes from './routes/gmailConnect.js';
 import gmailStatsRoutes from './routes/gmailStats.js';
 import gmailRecentRoutes from "./routes/gmailRecent.js";
 import campaignRoutes from "./routes/campaign.js";
+import trackingRoutes from "./routes/tracking.js";
+
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -55,6 +57,7 @@ app.use('/api/gmail', gmailStatsRoutes);
 app.use('/api/labels', labelRoutes);
 app.use("/api/gmail/recent", gmailRecentRoutes);
 app.use("/api/campaigns", campaignRoutes);
+app.use("/api/tracking", trackingRoutes);
 app.get('/api/dashboard', (req, res) => {
   // Add dashboard logic here
   res.json({ message: 'Dashboard data' });
