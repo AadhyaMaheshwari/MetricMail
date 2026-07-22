@@ -45,7 +45,7 @@ export default function Profile() {
       <header className="topbar">
         <div>
           <h1 className="greeting">Profile</h1>
-          <p className="greeting-sub">Your account details.</p>
+          <p className="greeting-sub">Your account details:</p>
         </div>
       </header>
 
@@ -85,7 +85,7 @@ export default function Profile() {
 
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '1rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderTop: '1px solid #efece6' }}>
-            <span style={{ color: '#6b6860' }}>Gmail Status</span>
+            <span style={{ color: '#6b6860' }}>Gmail Status: </span>
             <span style={{ fontWeight: 600, color: gmailConnected ? '#059669' : '#dc2626' }}>
               {loading ? '...' : gmailConnected ? 'Connected' : 'Not Connected'}
             </span>
