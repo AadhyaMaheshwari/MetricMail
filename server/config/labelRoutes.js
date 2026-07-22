@@ -212,6 +212,8 @@ router.post('/delete', async (req, res) => {
     if (!messageIds.length)
       return res.json({ success: true, deleted: 0 });
 
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms)); // FIX: was missing, caused ReferenceError
+
     if (permanent) {
       for (let i = 0; i < messageIds.length; i += 1000)
         await gmail.users.messages.batchDelete({
@@ -219,16 +221,21 @@ router.post('/delete', async (req, res) => {
           requestBody: { ids: messageIds.slice(i, i + 1000) },
         });
     } else {
-      for (const msg of results) {
-  await gmail.users.messages.modify({
-    userId: 'me',
-    id: msg.id,
-    requestBody: {
-      addLabelIds: [labelId],
-    },
-  });
-   await sleep(50); // prevents rate limit
-}
+      // FIX: was `for (const msg of results)` — `results` never existed in this
+      // function's scope. Now correctly iterates the messageIds we just fetched,
+      // and moves each message to Trash (adds TRASH, removes the custom label)
+      // instead of re-adding the same label being "deleted", which did nothing.
+      for (const messageId of messageIds) {
+        await gmail.users.messages.modify({
+          userId: 'me',
+          id: messageId,
+          requestBody: {
+            addLabelIds: ['TRASH'],
+            removeLabelIds: [labelId],
+          },
+        });
+        await sleep(50); // prevents rate limit
+      }
     }
 
     res.json({ success: true, deleted: messageIds.length, permanent, labelKey });
