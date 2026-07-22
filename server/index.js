@@ -3,12 +3,6 @@ dotenv.config();
 
 import fs from 'fs';
 import path from 'path';
-
-const uploadsDir = path.join(process.cwd(), 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
@@ -23,6 +17,10 @@ import trackingRoutes from "./routes/tracking.js";
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const app = express();
+const uploadsDir = path.join(process.cwd(), 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/signup-app';
 
