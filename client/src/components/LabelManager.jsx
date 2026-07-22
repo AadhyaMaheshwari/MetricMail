@@ -208,8 +208,8 @@ const confirmAndDelete = async (labelKey) => {
             </div>
             <div className="lm-modal-body">
               {LABEL_META[confirmDelete]?.permanent
-                ? 'This cannot be undone. Emails will be permanently deleted
-                : 'Emails move to Trash and are auto-deleted by Gmail after 30 days.'}
+  ? 'This cannot be undone. Emails will be permanently deleted.'
+  : 'Emails move to Trash and are auto-deleted by Gmail after 30 days.'}
             </div>
             <div className="lm-modal-actions">
               <button className="lm-btn" onClick={() => setConfirmDelete(null)}>
