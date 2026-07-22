@@ -10,8 +10,20 @@ const navItems = [
   { label: 'Profile', to: '/profile' },
 ];
 
+function getInitials(name) {
+  if (!name) return '?';
+  return name
+    .trim()
+    .split(' ')
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
+
 export default function DashboardLayout() {
   const location = useLocation();
+  const userName = localStorage.getItem('userName') || 'User';
 
   const isLinkActive = (to, isActive) => {
     if (to === '/dashboard') {
@@ -51,9 +63,9 @@ export default function DashboardLayout() {
 
         <div className="sidebar-footer">
           <div className="user-row">
-            <div className="avatar">?</div>
+            <div className="avatar">{getInitials(userName)}</div>
             <div className="user-info">
-              <div className="user-name">Welcome</div>
+              <div className="user-name">{userName}</div>
               <div className="user-role">Member</div>
             </div>
           </div>
