@@ -30,7 +30,7 @@ export default function DashboardLayout() {
       <aside className="sidebar">
         <div className="sidebar-logo">
           <span className="logo-mark">◆</span>
-          <span className="logo-text">SoftServe</span>
+          <span className="logo-text">MetricMail</span>
         </div>
 
         <nav className="sidebar-nav">
